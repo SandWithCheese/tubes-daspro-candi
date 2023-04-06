@@ -1,10 +1,15 @@
+import time
+
+
+# Rekursif
 def str_len(line: str) -> int:
-    i = 0
-    for j in line:
-        i += 1
-    return i
+    if line == "":
+        return 0
+    else:
+        return str_len(line[1:]) + 1
 
 
+# CSV Parser
 def split_line(line: str) -> list:
     arr = []
     i = 0
@@ -61,3 +66,28 @@ def panggil_jin(users: list, jenis_jin: str) -> list:
                     print()
                     print("Password panjangnya harus 5-25 karakter!")
                     print()
+
+
+def check_tipe(username: str, users: list) -> str:
+    for user in users:
+        if username == user[0]:
+            return user[2]
+
+
+def list_len(arr: list) -> int:
+    total = 0
+    for i in arr:
+        total += 1
+    return total
+
+
+# B01 - Random Number Generator
+# START
+def rand(seed: int, a: int, c: int, m: int) -> int:
+    return (a * seed + c) % m
+
+
+def randrange(low: int, high: int) -> int:
+    print(int(time.time_ns()))
+    return low + rand(int(time.time_ns()), 22695477, 1, 2**32) % (high - low + 1)
+# END

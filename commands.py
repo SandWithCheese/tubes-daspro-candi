@@ -130,3 +130,43 @@ def summon_jin(users: list) -> list:
             print(f'Tidak ada jenis jin bernomor "{nomor_jin}"!')
             print()
 # END
+
+
+# F04 - Hilangkan Jin
+# START
+def hapus_jin(username: str, users: list) -> list:
+    new_users = []
+    for user in users:
+        if user[0] == username:
+            continue
+        new_users = new_users + [user]
+    return new_users
+# END
+
+
+# F05 - Ubah Tipe Jin
+# START
+def ubah_tipe_jin(username: str, users: list, tipe_jin: str) -> list:
+    for user in users:
+        for user in users:
+            if user[0] == username:
+                if tipe_jin == "jin_pengumpul":
+                    user[2] = "jin_pembangun"
+                else:
+                    user[2] = "jin_pengumpul"
+    return users
+# END
+
+
+# F07 - Jin Pengumpul
+# START
+def kumpul(pasir: int, batu: int, air: int, bahan_bangunan: list) -> list:
+    if data.list_len(bahan_bangunan) == 1:
+        bahan_bangunan = bahan_bangunan + [["pasir", "Pasir alami dari sungai terdekat", 0], [
+            "batu", "Batu alami yang kokoh", 0], ["air", "Air jernih dari sungai terdekat", 0]]
+
+    bahan_bangunan[1][2] += pasir
+    bahan_bangunan[2][2] += batu
+    bahan_bangunan[3][2] += air
+    return bahan_bangunan
+# END
