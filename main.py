@@ -104,8 +104,34 @@ while True:
         else:
             print()
             print("Tidak ada jin dengan username tersebut.")
-    elif masukan == "bangun":
-        pass
+    elif masukan == "bangun" and isLoggedIn and user[2] == "jin_pembangun":
+        bahan = []
+        for i in range(3):
+            time.sleep(5/1000)
+            bahan = bahan + [data.randrange(0, 5)]
+
+        if bahan_bangunan[1][2] > bahan[0] and bahan_bangunan[2][2] > bahan[1] and bahan_bangunan[3][2] > bahan[2]:
+            bahan_bangunan[1][2] -= bahan[0]
+            bahan_bangunan[2][2] -= bahan[1]
+            bahan_bangunan[3][2] -= bahan[2]
+
+            bahan_bangunan, candi = commands.bangun(
+                bahan[0], bahan[1], bahan[2], candi, user)
+
+            print("Candi berhasil dibangun.")
+
+            total = 0
+            for i in candi:
+                if i != []:
+                    total += 1
+
+            if total < 101:
+                print(f"Sisa candi yang perlu dibangun: {101 - total}.")
+            else:
+                print("Sisa candi yang perlu dibangun: 0.")
+        else:
+            print("Bahan bangunan tidak mencukupi.")
+            print("Candi tidak bisa dibangun!")
     elif masukan == "kumpul" and isLoggedIn and user[2] == "jin_pengumpul":
         bahan = []
         for i in range(3):
@@ -115,10 +141,11 @@ while True:
             f"Jin menemukan {bahan[0]} pasir, {bahan[1]} batu, dan {bahan[2]} air.")
         bahan_bangunan = commands.kumpul(
             bahan[0], bahan[1], bahan[2], bahan_bangunan)
-    elif masukan == "batchkumpul":
-        pass
+    elif masukan == "batchkumpul" and isLoggedIn and user[2] == "bandung_bondowoso":
+        bahan_bangunan = commands.batchkumpul(bahan_bangunan, users)
     elif masukan == "batchbangun":
-        pass
+        bahan_bangunan, candi = commands.batchbangun(
+            bahan_bangunan, candi, users)
     elif masukan == "laporanjin":
         pass
     elif masukan == "laporancandi":

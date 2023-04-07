@@ -88,6 +88,5 @@ def rand(seed: int, a: int, c: int, m: int) -> int:
 
 
 def randrange(low: int, high: int) -> int:
-    print(int(time.time_ns()))
     return low + rand(int(time.time_ns()), 22695477, 1, 2**32) % (high - low + 1)
 # END

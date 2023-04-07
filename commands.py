@@ -1,4 +1,5 @@
 import data
+import time
 
 
 # F01 - Login
@@ -113,15 +114,14 @@ def help(user: list):
 # START
 def summon_jin(users: list) -> list:
     while True:
-        nomor_jin = int(
-            input("Masukkan nomor jenis jin yang ingin dipanggil: "))
+        nomor_jin = input("Masukkan nomor jenis jin yang ingin dipanggil: ")
         print()
-        if nomor_jin == 1:
+        if nomor_jin == "1":
             print('Memilih jin "Pengumpul".')
             print()
             users = data.panggil_jin(users, "jin_pengumpul")
             return users
-        elif nomor_jin == 2:
+        elif nomor_jin == "2":
             print('Memilih jin "Pembangun".')
             print()
             users = data.panggil_jin(users, "jin_pembangun")
@@ -148,12 +148,11 @@ def hapus_jin(username: str, users: list) -> list:
 # START
 def ubah_tipe_jin(username: str, users: list, tipe_jin: str) -> list:
     for user in users:
-        for user in users:
-            if user[0] == username:
-                if tipe_jin == "jin_pengumpul":
-                    user[2] = "jin_pembangun"
-                else:
-                    user[2] = "jin_pengumpul"
+        if user[0] == username:
+            if tipe_jin == "jin_pengumpul":
+                user[2] = "jin_pembangun"
+            else:
+                user[2] = "jin_pengumpul"
     return users
 # END
 
@@ -169,4 +168,117 @@ def kumpul(pasir: int, batu: int, air: int, bahan_bangunan: list) -> list:
     bahan_bangunan[2][2] += batu
     bahan_bangunan[3][2] += air
     return bahan_bangunan
+# END
+
+
+# F06 - Jin Pembangun
+# START
+def bangun(pasir: int, batu: int, air: int, candi: list, user: str) -> list:
+    if data.list_len(candi) == 1:
+        candi = candi + [[1, user[0], pasir, batu, air]]
+    else:
+        for i in candi:
+            if i == []:
+                candi = candi + [[i[-1][0] + 1, user[0], pasir, batu, air]]
+                break
+        else:
+            candi = candi + [[candi[-1][0] + 1, user[0], pasir, batu, air]]
+
+    return candi
+# END
+
+
+# F08 - Batch Kumpul/Bangun
+# START
+def batchkumpul(bahan_bangunan: list, users: list) -> list:
+    total_pengumpul = 0
+    for user in users:
+        if user[2] == "jin_pengumpul":
+            total_pengumpul += 1
+
+    if total_pengumpul > 1:
+        print(f"Mengerahkan {total_pengumpul} jin untuk mengumpulkan bahan.")
+        total_bahan = [0, 0, 0]
+        for i in range(total_pengumpul):
+            bahan = []
+            for j in range(3):
+                time.sleep(5/1000)
+                bahan = bahan + [data.randrange(0, 5)]
+
+            total_bahan[0] += bahan[0]
+            total_bahan[1] += bahan[1]
+            total_bahan[2] += bahan[2]
+            bahan_bangunan = kumpul(
+                bahan[0], bahan[1], bahan[2], bahan_bangunan)
+
+        print(
+            f"Jin menemukan total {total_bahan[0]} pasir, {total_bahan[1]} batu, dan {total_bahan[2]} air.")
+    else:
+        print(
+            "Kumpul gagal. Anda tidak punya jin pengumpul. Silakan summon terlebih dahulu.")
+
+    print(bahan_bangunan)
+    return bahan_bangunan
+
+
+def batchbangun(bahan_bangunan: list, candi: list, users: str) -> tuple:
+    total_pembangun = 0
+    list_user = []
+    for user in users:
+        if user[2] == "jin_pembangun":
+            total_pembangun += 1
+            list_user = list_user + [user[0]]
+    if total_pembangun > 0:
+        total_bahan = [0, 0, 0]
+        list_bahan = []
+        for i in range(total_pembangun):
+            bahan = []
+            for j in range(3):
+                time.sleep(5/1000)
+                bahan = bahan + [data.randrange(0, 5)]
+
+            total_bahan[0] += bahan[0]
+            total_bahan[1] += bahan[1]
+            total_bahan[2] += bahan[2]
+            list_bahan = list_bahan + [bahan]
+
+        print(
+            f"Mengerahkan {total_pembangun} jin untuk membangun candi dengan total bahan {total_bahan[0]} pasir, {total_bahan[1]} batu, dan {total_bahan[0]} air.")
+
+        if bahan_bangunan[1][2] >= total_bahan[0] and bahan_bangunan[2][2] >= total_bahan[1] and bahan_bangunan[3][2] >= total_bahan[2]:
+            bahan_bangunan[1][2] -= total_bahan[0]
+            bahan_bangunan[2][2] -= total_bahan[1]
+            bahan_bangunan[3][2] -= total_bahan[2]
+
+            for k in range(total_pembangun):
+                candi = bangun(
+                    list_bahan[k][0], list_bahan[k][1], list_bahan[k][2], candi, list_user[k])
+
+            print(f"Jin berhasil membangun total {total_pembangun} candi.")
+        else:
+            if total_bahan[0] > bahan_bangunan[1][2] and total_bahan[1] > bahan_bangunan[2][2] and total_bahan[2] > bahan_bangunan[3][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[0] - bahan_bangunan[1][2]} pasir, {total_bahan[1] - bahan_bangunan[2][2]} batu, dan {total_bahan[2] > bahan_bangunan[3][2]} air.")
+            elif total_bahan[0] > bahan_bangunan[1][2] and total_bahan[1] > bahan_bangunan[2][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[0] - bahan_bangunan[1][2]} pasir dan {total_bahan[1] - bahan_bangunan[2][2]} batu.")
+            elif total_bahan[0] > bahan_bangunan[1][2] and total_bahan[2] > bahan_bangunan[3][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[0] - bahan_bangunan[1][2]} pasir dan {total_bahan[2] > bahan_bangunan[3][2]} air.")
+            elif total_bahan[1] > bahan_bangunan[2][2] and total_bahan[2] > bahan_bangunan[3][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[1] - bahan_bangunan[2][2]} batu dan {total_bahan[2] > bahan_bangunan[3][2]} air.")
+            elif total_bahan[0] > bahan_bangunan[1][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[0] - bahan_bangunan[1][2]} pasir.")
+            elif total_bahan[1] > bahan_bangunan[2][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[1] - bahan_bangunan[2][2]} batu.")
+            elif total_bahan[2] > bahan_bangunan[3][2]:
+                print(
+                    f"Bangun gagal. Kurang {total_bahan[2] - bahan_bangunan[3][2]} air.")
+    else:
+        print(
+            "Bangun gagal. Anda tidak punya jin pembangun. Silakan summon terlebih dahulu.")
+    return (bahan_bangunan, candi)
 # END
