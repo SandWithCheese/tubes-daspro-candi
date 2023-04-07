@@ -115,8 +115,8 @@ while True:
             bahan_bangunan[2][2] -= bahan[1]
             bahan_bangunan[3][2] -= bahan[2]
 
-            bahan_bangunan, candi = commands.bangun(
-                bahan[0], bahan[1], bahan[2], candi, user)
+            candi = commands.bangun(
+                bahan[0], bahan[1], bahan[2], candi, user[0])
 
             print("Candi berhasil dibangun.")
 
@@ -143,13 +143,17 @@ while True:
             bahan[0], bahan[1], bahan[2], bahan_bangunan)
     elif masukan == "batchkumpul" and isLoggedIn and user[2] == "bandung_bondowoso":
         bahan_bangunan = commands.batchkumpul(bahan_bangunan, users)
-    elif masukan == "batchbangun":
+    elif masukan == "batchbangun" and isLoggedIn and user[2] == "bandung_bondowoso":
         bahan_bangunan, candi = commands.batchbangun(
             bahan_bangunan, candi, users)
-    elif masukan == "laporanjin":
-        pass
-    elif masukan == "laporancandi":
-        pass
+    elif masukan == "laporanjin" and isLoggedIn and user[2] == "bandung_bondowoso":
+        commands.laporan_jin(users, candi, bahan_bangunan)
+    elif masukan == "laporanjin" and isLoggedIn and user[2] != "bandung_bondowoso":
+        print("Laporan jin hanya dapat diakses oleh akun Bandung Bondowoso")
+    elif masukan == "laporancandi" and isLoggedIn and user[2] == "bandung_bondowoso":
+        commands.laporan_candi(candi)
+    elif masukan == "laporancandi" and isLoggedIn and user[2] != "bandung_bondowoso":
+        print("Laporan candi hanya dapat diakses oleh akun Bandung Bondowoso")
     elif masukan == "hancurkancandi":
         pass
     elif masukan == "ayamberkokok":
@@ -163,4 +167,6 @@ while True:
     else:
         print("Masukan tidak valid")
     # ONLY FOR DEBUG
-    print(users)
+    print(f"Users: {users}")
+    print(f"Candi: {candi}")
+    print(f"Bahan: {bahan_bangunan}")

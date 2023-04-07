@@ -160,7 +160,7 @@ def ubah_tipe_jin(username: str, users: list, tipe_jin: str) -> list:
 # F07 - Jin Pengumpul
 # START
 def kumpul(pasir: int, batu: int, air: int, bahan_bangunan: list) -> list:
-    if data.list_len(bahan_bangunan) == 1:
+    if data.length(bahan_bangunan) == 1:
         bahan_bangunan = bahan_bangunan + [["pasir", "Pasir alami dari sungai terdekat", 0], [
             "batu", "Batu alami yang kokoh", 0], ["air", "Air jernih dari sungai terdekat", 0]]
 
@@ -174,15 +174,15 @@ def kumpul(pasir: int, batu: int, air: int, bahan_bangunan: list) -> list:
 # F06 - Jin Pembangun
 # START
 def bangun(pasir: int, batu: int, air: int, candi: list, user: str) -> list:
-    if data.list_len(candi) == 1:
-        candi = candi + [[1, user[0], pasir, batu, air]]
+    if data.length(candi) == 1:
+        candi = candi + [[1, user, pasir, batu, air]]
     else:
         for i in candi:
             if i == []:
-                candi = candi + [[i[-1][0] + 1, user[0], pasir, batu, air]]
+                candi = candi + [[i[-1][0] + 1, user, pasir, batu, air]]
                 break
         else:
-            candi = candi + [[candi[-1][0] + 1, user[0], pasir, batu, air]]
+            candi = candi + [[candi[-1][0] + 1, user, pasir, batu, air]]
 
     return candi
 # END
@@ -196,7 +196,7 @@ def batchkumpul(bahan_bangunan: list, users: list) -> list:
         if user[2] == "jin_pengumpul":
             total_pengumpul += 1
 
-    if total_pengumpul > 1:
+    if total_pengumpul > 0:
         print(f"Mengerahkan {total_pengumpul} jin untuk mengumpulkan bahan.")
         total_bahan = [0, 0, 0]
         for i in range(total_pengumpul):
@@ -281,4 +281,108 @@ def batchbangun(bahan_bangunan: list, candi: list, users: str) -> tuple:
         print(
             "Bangun gagal. Anda tidak punya jin pembangun. Silakan summon terlebih dahulu.")
     return (bahan_bangunan, candi)
+# END
+
+
+# F09 - Ambil Laporan Jin
+# START
+def laporan_jin(users: list, candi: list, bahan_bangunan: list):
+    total_jin = 0
+    total_jin_pengumpul = 0
+    total_jin_pembangun = 0
+    list_pembangun = ["" for i in range(data.length(users))]
+    for i in range(data.length(users)):
+        if users[i][2] == "jin_pengumpul":
+            total_jin += 1
+            total_jin_pengumpul += 1
+        if users[i][2] == "jin_pembangun":
+            total_jin += 1
+            total_jin_pembangun += 1
+            list_pembangun[i] = users[i][0]
+
+    print()
+    print(f"> Total Jin: {total_jin}")
+    print(f"> Total Jin Pengumpul: {total_jin_pengumpul}")
+    print(f"> Total Jin Pembangun: {total_jin_pembangun}")
+
+    data_jin_pembangun = [["", 0] for i in range(total_jin_pembangun)]
+    for i in range(data.length(users)):
+        if list_pembangun == "":
+            continue
+        user_jin = list_pembangun[i]
+        total_kerajinan = 0
+        for j in range(data.length(candi)):
+            if user_jin == candi[j][1]:
+                total_kerajinan += 1
+
+        for j in range(data.length(data_jin_pembangun)):
+            if data_jin_pembangun[j] == ["", 0]:
+                data_jin_pembangun[j][0] = user_jin
+                data_jin_pembangun[j][1] = total_kerajinan
+                break
+
+    jin_rajin = data_jin_pembangun[0][0]
+    jin_malas = data_jin_pembangun[0][0]
+    max_jin_rajin = data_jin_pembangun[0][1]
+    min_jin_malas = data_jin_pembangun[0][1]
+    for i in range(total_jin_pembangun):
+        if data_jin_pembangun[i][1] > max_jin_rajin:
+            max_jin_rajin = data_jin_pembangun[i][1]
+            jin_rajin = data_jin_pembangun[i][0]
+        if data_jin_pembangun[i][1] < min_jin_malas:
+            min_jin_malas = data_jin_pembangun[i][1]
+            jin_malas = data_jin_pembangun[i][0]
+
+    if total_jin_pembangun == 0:
+        jin_rajin = "-"
+        jin_malas = "-"
+
+    print(f"> Jin Terajin: {jin_rajin}")
+    print(f"> Jin Termalas: {jin_malas}")
+    print(f"> Jumlah Pasir: {bahan_bangunan[1][2]}")
+    print(f"> Jumlah Air: {bahan_bangunan[2][2]}")
+    print(f"> Jumlah Batu: {bahan_bangunan[3][2]}")
+# END
+
+
+# F10 - Ambil Laporan Candi
+# START
+def laporan_candi(candi: list):
+    print(f"> Total Candi: {data.length(candi) - 1}")
+
+    pasir = 0
+    batu = 0
+    air = 0
+    list_harga_candi = [[0, 0] for i in range(data.length(candi))]
+    for i in range(1, data.length(candi)):
+        pasir += candi[i][2]
+        batu += candi[i][3]
+        air += candi[i][4]
+
+        list_harga_candi[i][0] = candi[i][0]
+        list_harga_candi[i][1] = candi[i][2]*10000 + \
+            candi[i][3]*15000 + candi[i][4]*7500
+
+    print(f"> Total Pasir yang digunakan: {pasir}")
+    print(f"> Total Batu yang digunakan: {batu}")
+    print(f"> Total Air yang digunakan: {air}")
+
+    if data.length(candi) == 1:
+        print("ID Candi Termahal: -")
+        print("ID Candi Termurah: -")
+    else:
+        id_candi_mahal = list_harga_candi[1][0]
+        candi_mahal = list_harga_candi[1][1]
+        id_candi_murah = list_harga_candi[1][0]
+        candi_murah = list_harga_candi[1][1]
+        for i in range(1, data.length(candi)):
+            if candi_mahal < list_harga_candi[i][1]:
+                id_candi_mahal = list_harga_candi[i][0]
+                candi_mahal = list_harga_candi[i][1]
+            if candi_murah > list_harga_candi[i][1]:
+                id_candi_murah = list_harga_candi[i][0]
+                candi_murah = list_harga_candi[i][1]
+
+        print(f"ID Candi Termahal: {id_candi_mahal}")
+        print(f"ID Candi Termurah: {id_candi_murah}")
 # END

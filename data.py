@@ -1,19 +1,21 @@
 import time
 
 
-# Rekursif
-def str_len(line: str) -> int:
-    if line == "":
-        return 0
-    else:
-        return str_len(line[1:]) + 1
+def length(x: list) -> int:
+    N = 10000
+    for i in range(N):
+        arr = [0 for j in range(i)]
+        for k in range(i):
+            arr[k] = x[k]
+        if arr == list(x):
+            return i
 
 
 # CSV Parser
 def split_line(line: str) -> list:
     arr = []
     i = 0
-    while i < str_len(line):
+    while i < length(line):
         if line[i] == ";" or line[i] == "\n":
             arr = arr + [line[:i]]
             line = line[i+1:]
@@ -38,7 +40,7 @@ def check_username(username: str, users: list) -> bool:
 
 
 def check_password(password: str) -> bool:
-    return 5 <= str_len(password) <= 25
+    return 5 <= length(password) <= 25
 
 
 def panggil_jin(users: list, jenis_jin: str) -> list:
@@ -74,11 +76,11 @@ def check_tipe(username: str, users: list) -> str:
             return user[2]
 
 
-def list_len(arr: list) -> int:
-    total = 0
-    for i in arr:
-        total += 1
-    return total
+# def list_len(arr: list) -> int:
+#     total = 0
+#     for i in arr:
+#         total += 1
+#     return total
 
 
 # B01 - Random Number Generator
